@@ -1,0 +1,48 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.11.35327.3
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Fintrellis.WebApi", "Fintrellis.WebApi\Fintrellis.WebApi.csproj", "{C85183CC-8A15-4D70-B246-01012B65F6FC}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Fintrellis.Services", "Fintrellis.Services\Fintrellis.Services.csproj", "{4C13D0E1-B09A-43AE-B636-A75CA927CD97}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Fintrellis.MongoDb", "Fintrellis.MongoDb\Fintrellis.MongoDb.csproj", "{25B51DFB-C0A6-45D7-8A10-832C43A9739A}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{21A5FF62-C182-4FAF-A2C0-6BAECE860662}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Fintrellis.Services.Tests", "Fintrellis.Services.Tests\Fintrellis.Services.Tests.csproj", "{D4177449-920E-4585-A2F0-5BDBC6F061DD}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{C85183CC-8A15-4D70-B246-01012B65F6FC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C85183CC-8A15-4D70-B246-01012B65F6FC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C85183CC-8A15-4D70-B246-01012B65F6FC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C85183CC-8A15-4D70-B246-01012B65F6FC}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4C13D0E1-B09A-43AE-B636-A75CA927CD97}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4C13D0E1-B09A-43AE-B636-A75CA927CD97}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4C13D0E1-B09A-43AE-B636-A75CA927CD97}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4C13D0E1-B09A-43AE-B636-A75CA927CD97}.Release|Any CPU.Build.0 = Release|Any CPU
+		{25B51DFB-C0A6-45D7-8A10-832C43A9739A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{25B51DFB-C0A6-45D7-8A10-832C43A9739A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{25B51DFB-C0A6-45D7-8A10-832C43A9739A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{25B51DFB-C0A6-45D7-8A10-832C43A9739A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D4177449-920E-4585-A2F0-5BDBC6F061DD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D4177449-920E-4585-A2F0-5BDBC6F061DD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D4177449-920E-4585-A2F0-5BDBC6F061DD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D4177449-920E-4585-A2F0-5BDBC6F061DD}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{D4177449-920E-4585-A2F0-5BDBC6F061DD} = {21A5FF62-C182-4FAF-A2C0-6BAECE860662}
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {06E33B21-DEAA-420D-9F97-11A968F5E299}
+	EndGlobalSection
+EndGlobal

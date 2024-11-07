@@ -1,0 +1,27 @@
+services:
+  blogging-v1-api:
+    restart: always
+    container_name: blogging-v1-api
+    build:
+      context: ../src/
+      dockerfile: Dockerfile
+      target: api
+    ports:
+      - 8063:8080
+    env_file:
+      - docker-compose.env
+    depends_on:
+      - mongo
+    environment:
+      MONGO_CONNECTION_STRING: mongodb://admin:admin@mongo:27017/
+
+  mongo:
+    image: mongo:5.0.24
+    restart: always
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: admin
+      MONGO_INITDB_ROOT_PASSWORD: admin
+    ports:
+      - 27017:27017
+    volumes:
+      - ~/.docker/mongo/data/:/data/db
