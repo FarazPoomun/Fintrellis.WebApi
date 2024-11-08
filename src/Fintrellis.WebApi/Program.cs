@@ -1,7 +1,11 @@
 using Fintrellis.MongoDb.Extensions;
 using Fintrellis.Services.Interfaces;
 using Fintrellis.Services.Mapping;
+using Fintrellis.Services.Resiliency;
 using Fintrellis.Services.Services;
+using Fintrellis.Services.Validators;
+using FluentValidation;
+using FluentValidation.AspNetCore;
 using MongoDB.Driver;
 
 namespace Fintrellis.WebApi
@@ -12,14 +16,26 @@ namespace Fintrellis.WebApi
         {
             var builder = WebApplication.CreateBuilder(args);
             var serviceAssembly = typeof(PostMapping).Assembly;
+            var retryPolicyConfiguration = builder.Configuration.GetSection("RetryPolicy");
+            var retryAttempt = retryPolicyConfiguration.GetValue<int>("RetryAttempt");
+            var incrementalCount = retryPolicyConfiguration.GetValue<int>("IncrementalCount");
 
             builder.Services.AddControllers();
+
+            builder.Services.AddFluentValidationAutoValidation()
+                .AddValidatorsFromAssembly(serviceAssembly);
+
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
 
             builder.Services.AddTransient<IPostService, PostService>();
             builder.Services.RegisterRepository();
             builder.Services.AddAutoMapper(serviceAssembly);
+            builder.Services.AddSingleton<IRetryHandler>(sp =>
+            {
+                var logger = sp.GetRequiredService<ILogger<PollyRetryHandler>>();
+                return new PollyRetryHandler(retryAttempt, incrementalCount, logger);
+            });
 
             ConfigureMongo(builder);
             var app = builder.Build();

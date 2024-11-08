@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using Fintrellis.MongoDb.Interfaces;
+using Fintrellis.Services.Interfaces;
 using Fintrellis.Services.Models;
 using Fintrellis.Services.Services;
 using FluentAssertions;
@@ -14,6 +15,7 @@ namespace Fintrellis.Services.Tests.Services
     {
         private readonly Mock<ILogger<PostService>> _loggerMock;
         private readonly Mock<IRepository<Post>> _repositoryMock;
+        private readonly Mock<IRetryHandler> _retryHandlerMock;
         private readonly Mock<IMapper> _mapperMock;
         private readonly PostService _postService;
 
@@ -22,7 +24,13 @@ namespace Fintrellis.Services.Tests.Services
             _loggerMock = new Mock<ILogger<PostService>>();
             _repositoryMock = new Mock<IRepository<Post>>();
             _mapperMock = new Mock<IMapper>();
-            _postService = new PostService(_loggerMock.Object, _repositoryMock.Object, _mapperMock.Object);
+            _retryHandlerMock = new Mock<IRetryHandler>();
+
+            _retryHandlerMock.Setup(r => r.ExecuteWithRetryAsync(It.IsAny<Func<Task>>()))
+                 .Callback<Func<Task>>(async action => await action())
+                 .Returns(Task.CompletedTask);
+
+            _postService = new PostService(_loggerMock.Object, _repositoryMock.Object, _mapperMock.Object, _retryHandlerMock.Object);
         }
 
         #region GetPostsAsync
@@ -100,7 +108,9 @@ namespace Fintrellis.Services.Tests.Services
             result.Should().NotBeNull();
             result!.PostId.Should().NotBeEmpty();
             result.Title.Should().Be(postRequest.Title);
-            _repositoryMock.Verify(r => r.InsertOneAsync(It.IsAny<Post>()), Times.Once);
+
+            _retryHandlerMock.Verify(r => r.ExecuteWithRetryAsync(It.IsAny<Func<Task>>()), Times.Once); 
+            _repositoryMock.Verify(r => r.InsertOneAsync(It.IsAny<Post>()), Times.Once); 
         }
 
         #endregion
@@ -125,6 +135,7 @@ namespace Fintrellis.Services.Tests.Services
 
             // Assert
             result.Should().NotBeNull();
+            _retryHandlerMock.Verify(r => r.ExecuteWithRetryAsync(It.IsAny<Func<Task>>()), Times.Once);
             _repositoryMock.Verify(r => r.UpdateAsync(It.IsAny<Post>()), Times.Once);
         }
 
@@ -159,9 +170,10 @@ namespace Fintrellis.Services.Tests.Services
                            .Returns(Task.CompletedTask);
 
             // Act
-            await _postService.DeletePostAsync(postId);
+            var result = await _postService.DeletePostAsync(postId);
 
             // Assert
+            result.Should().BeTrue();
             _repositoryMock.Verify(r => r.DeleteOneAsync(It.IsAny<Expression<Func<Post, bool>>>()), Times.Once);
         }
 

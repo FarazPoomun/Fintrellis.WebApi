@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using Fintrellis.MongoDb.Interfaces;
+using Fintrellis.Services.Extensions;
 using Fintrellis.Services.Interfaces;
 using Fintrellis.Services.Models;
 using Microsoft.Extensions.Logging;
@@ -10,7 +11,7 @@ namespace Fintrellis.Services.Services
     /// <summary>
     /// Service to manage posts
     /// </summary>
-    public class PostService(ILogger<PostService> logger, IRepository<Post> repository, IMapper mapper) : IPostService
+    public class PostService(ILogger<PostService> logger, IRepository<Post> repository, IMapper mapper, IRetryHandler retryHandler) : IPostService
     {
         public async Task<IEnumerable<Post>> GetPostsAsync(Guid? postId = null)
         {
@@ -27,32 +28,63 @@ namespace Fintrellis.Services.Services
 
         public async Task<Post?> AddNewPostAsync(PostCreateRequest post)
         {
-            var mappedPost = mapper.Map<Post>(post);
-            mappedPost.PostId = Guid.NewGuid();
-            await repository.InsertOneAsync(mappedPost);
+            try
+            {
+                var mappedPost = mapper.Map<Post>(post);
+                mappedPost.PostId = Guid.NewGuid();
 
-            logger.LogInformation($"Adding new post with id {mappedPost.PostId}");
-            return mappedPost;
+                await InvokeWithPollyRetry(async () => await repository.InsertOneAsync(mappedPost));
+
+                return mappedPost;
+            }
+            catch (Exception ex)
+            {
+                logger.LogErrorMessage("Failed to create new post", ex);
+                return null;
+            }
         }
 
         public async Task<Post?> UpdatePostAsync(Guid postId, PostUpdateRequest post)
         {
-            var entity = await repository.GetFirstOrDefaultAsync(x => x.PostId == postId);
-
-            if (entity == null)
+            try
             {
+                var entity = await repository.GetFirstOrDefaultAsync(x => x.PostId == postId);
+
+                if (entity == null)
+                {
+                    return null;
+                }
+
+                mapper.Map(post, entity);
+
+
+                await InvokeWithPollyRetry(async () => await repository.UpdateAsync(entity));
+                return entity;
+            }
+            catch (Exception ex)
+            {
+                logger.LogErrorMessage($"Failed to update post with id {postId}", ex);
                 return null;
             }
-
-            mapper.Map(post, entity);
-            await repository.UpdateAsync(entity);
-
-            return entity;
         }
 
-        public async Task DeletePostAsync(Guid postId)
+        public async Task<bool> DeletePostAsync(Guid postId)
         {
-            await repository.DeleteOneAsync(z => z.PostId == postId);
+            try
+            {
+                await InvokeWithPollyRetry(async () => await repository.DeleteOneAsync(z => z.PostId == postId));
+                return true;
+            }
+            catch (Exception ex)
+            {
+                logger.LogErrorMessage($"Failed to delete post with id {postId}", ex);
+                return false;
+            }
+        }
+
+        private async Task InvokeWithPollyRetry(Func<Task> action)
+        {
+            await retryHandler.ExecuteWithRetryAsync(action);
         }
     }
 }

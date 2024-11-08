@@ -79,7 +79,13 @@ namespace Fintrellis.WebApi.Controllers
         [HttpDelete("{postId}")]
         public async Task<ActionResult> DeletePosts(Guid postId)
         {
-            await _postService.DeletePostAsync(postId);
+            var result = await _postService.DeletePostAsync(postId);
+
+            if (!result)
+            {
+                return BadRequest();
+            }
+
             return Ok();
         }
     }

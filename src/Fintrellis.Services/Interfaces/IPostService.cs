@@ -33,6 +33,6 @@ namespace Fintrellis.Services.Interfaces
         /// </summary>
         /// <param name="postId"></param>
         /// <returns></returns>
-        Task DeletePostAsync(Guid postId);
+        Task<bool> DeletePostAsync(Guid postId);
     }
 }
