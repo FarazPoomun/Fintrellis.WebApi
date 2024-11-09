@@ -51,7 +51,7 @@ git clone https://github.com/FarazPoomun/Fintrellis.WebApi.git
 ```
 
 Within the clone folder, navigate to the **local/** folder as shown in the [High level folder structure](#high-level-folder-structure) and open a terminal in that location.  
-A docker compose file will be present that is configured to have the application and mongo db up and running on your machine.  
+A docker compose file will be present that is configured to have the application, mongo db and redid up and running on your machine.  
 Run the following command in the terminal to get the containers running:
 
 ```
