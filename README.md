@@ -29,6 +29,7 @@ These instructions will get you a copy of the project up and running on your loc
     - `Dockerfile`
 
     - **Fintrellis.Services/**
+    - **Fintrellis.Redis/**
     - **Fintrellis.MongoDb/**
     - **Fintrellis.WebApi/**
     - **Fintrellis.Services.Tests/**
@@ -84,6 +85,7 @@ The application is broken down into 4 projects.
 
   - This project holds the necessary business logic that is consumed by the controller.
   - It also includes retry policy functionality for when exeptions are thrown by outside code.
+  - Uses redis to cache data for faster retrieval.
   - Validators also resides within this project to validate user inputs.
 
 - Fintrellis.MongoDb (Class Library)
@@ -91,6 +93,11 @@ The application is broken down into 4 projects.
   - This project holds the necessary code to communicate with MongoDb.
   - It uses the repository design pattern to provide a generic repository class that can be consumed by services to do CRUD operation on the database.
   - Also defines a contract `IMongoEntity.cs` that all entity should abide by in order to properly utilize the repository class.
+
+- Fintrellis.Redis (Class Library)
+
+  - This project holds the necessary code to configure Redis.
+  - It uses the repository design pattern to provide a generic class to manipulate cache data.
 
 - Fintrellis.Services.Tests(xUnit Test Project)
   - This project holds the tests to test the business logic of the application, more specifically testing Fintrellis.Services project.
