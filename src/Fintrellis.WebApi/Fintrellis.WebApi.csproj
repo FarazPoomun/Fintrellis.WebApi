@@ -16,6 +16,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\Fintrellis.Redis\Fintrellis.Redis.csproj" />
     <ProjectReference Include="..\Fintrellis.Services\Fintrellis.Services.csproj" />
   </ItemGroup>
 

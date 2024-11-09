@@ -14,6 +14,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Fintrellis.MongoDb\Fintrellis.MongoDb.csproj" />
+    <ProjectReference Include="..\Fintrellis.Redis\Fintrellis.Redis.csproj" />
   </ItemGroup>
 
 </Project>

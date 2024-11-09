@@ -6,6 +6,7 @@ FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
 WORKDIR /src
 COPY *.sln .
 COPY ["Fintrellis.Services.Tests/*.csproj", "Fintrellis.Services.Tests/"]
+COPY ["Fintrellis.Redis/*.csproj", "Fintrellis.Redis/"]
 COPY ["Fintrellis.MongoDb/*.csproj", "Fintrellis.MongoDb/"]
 COPY ["Fintrellis.Services/*.csproj", "Fintrellis.Services/"]
 COPY ["Fintrellis.WebApi/*.csproj", "Fintrellis.WebApi/"]

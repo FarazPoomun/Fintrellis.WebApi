@@ -11,7 +11,7 @@ namespace Fintrellis.Services.Interfaces
         /// Gets a list of Posts or optionally can be filtered by just one post Id
         /// </summary>
         /// <returns></returns>
-        Task<IEnumerable<Post>> GetPostsAsync(Guid? postId = null);
+        Task<IReadOnlyList<Post>?> GetPostsAsync(Guid? postId = null);
 
         /// <summary>
         /// Adds a new post

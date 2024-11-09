@@ -17,8 +17,14 @@ namespace Fintrellis.WebApi.Controllers
         [HttpGet]
         public async Task<ActionResult> GetPosts()
         {
-            var posts = await _postService.GetPostsAsync();
-            return Ok(posts);
+            var result = await _postService.GetPostsAsync();
+
+            if (result == null)
+            {
+                return BadRequest("Failed to get posts.");
+            }
+
+            return Ok(result);
         }
 
         /// <summary>
@@ -29,8 +35,14 @@ namespace Fintrellis.WebApi.Controllers
         [HttpGet("{postId:guid}")]
         public async Task<ActionResult> GetPost(Guid postId)
         {
-            var posts = await _postService.GetPostsAsync(postId);
-            return Ok(posts);
+            var result = await _postService.GetPostsAsync(postId);
+
+            if (result == null)
+            {
+                return BadRequest("Failed to get post.");
+            }
+
+            return Ok(result);
         }
 
         /// <summary>
@@ -83,7 +95,7 @@ namespace Fintrellis.WebApi.Controllers
 
             if (!result)
             {
-                return BadRequest();
+                return BadRequest("Failed to delete post.");
             }
 
             return Ok();

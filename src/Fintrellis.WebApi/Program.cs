@@ -1,4 +1,7 @@
 using Fintrellis.MongoDb.Extensions;
+using Fintrellis.Redis.Extensions;
+using Fintrellis.Redis.Interfaces;
+using Fintrellis.Redis.Services;
 using Fintrellis.Services.Interfaces;
 using Fintrellis.Services.Mapping;
 using Fintrellis.Services.Resiliency;
@@ -7,6 +10,7 @@ using Fintrellis.Services.Validators;
 using FluentValidation;
 using FluentValidation.AspNetCore;
 using MongoDB.Driver;
+using StackExchange.Redis;
 
 namespace Fintrellis.WebApi
 {
@@ -19,6 +23,8 @@ namespace Fintrellis.WebApi
             var retryPolicyConfiguration = builder.Configuration.GetSection("RetryPolicy");
             var retryAttempt = retryPolicyConfiguration.GetValue<int>("RetryAttempt");
             var incrementalCount = retryPolicyConfiguration.GetValue<int>("IncrementalCount");
+            var redisConfiguration = builder.Configuration.GetSection("Redis");
+            var redisConfigurationConnString = redisConfiguration.GetValue<string>("ConnectionString");
 
             builder.Services.AddControllers();
 
@@ -30,6 +36,7 @@ namespace Fintrellis.WebApi
 
             builder.Services.AddTransient<IPostService, PostService>();
             builder.Services.RegisterRepository();
+            builder.Services.RegisterCachingService(redisConfigurationConnString!);
             builder.Services.AddAutoMapper(serviceAssembly);
             builder.Services.AddSingleton<IRetryHandler>(sp =>
             {
