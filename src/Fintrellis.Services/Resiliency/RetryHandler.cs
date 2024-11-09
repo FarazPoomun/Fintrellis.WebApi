@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Fintrellis.Services.Resiliency
+﻿namespace Fintrellis.Services.Resiliency
 {
     using Fintrellis.Services.Interfaces;
     using Microsoft.Extensions.Logging;
@@ -16,6 +10,7 @@ namespace Fintrellis.Services.Resiliency
         private readonly AsyncRetryPolicy _retryPolicy;
         private readonly ILogger<PollyRetryHandler> _logger;
 
+        /// <inheritdoc/>
         public PollyRetryHandler(int retryCount, int incrementalCount, ILogger<PollyRetryHandler> logger)
         {
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));

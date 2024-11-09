@@ -26,7 +26,7 @@ namespace Fintrellis.WebApi.Controllers
         /// </summary>
         /// <param name="postId"></param>
         /// <returns></returns>
-        [HttpGet("{postId}")]
+        [HttpGet("{postId:guid}")]
         public async Task<ActionResult> GetPost(Guid postId)
         {
             var posts = await _postService.GetPostsAsync(postId);
@@ -45,7 +45,7 @@ namespace Fintrellis.WebApi.Controllers
 
             if (result == null)
             {
-                return BadRequest();
+                return BadRequest("Failed to create post.");
             }
 
             return Ok(result);
@@ -58,14 +58,14 @@ namespace Fintrellis.WebApi.Controllers
         /// <param name="post"></param>
         /// <returns></returns>
 
-        [HttpPut("{postId}")]
+        [HttpPut("{postId:guid}")]
         public async Task<ActionResult> PutPosts(Guid postId, PostUpdateRequest post)
         {
             var result = await _postService.UpdatePostAsync(postId, post);
 
             if (result == null)
             {
-                return BadRequest();
+                return BadRequest("Failed to update post.");
             }
 
             return Ok(result);
@@ -76,7 +76,7 @@ namespace Fintrellis.WebApi.Controllers
         /// </summary>
         /// <param name="postId"></param>
         /// <returns></returns>
-        [HttpDelete("{postId}")]
+        [HttpDelete("{postId:guid}")]
         public async Task<ActionResult> DeletePosts(Guid postId)
         {
             var result = await _postService.DeletePostAsync(postId);

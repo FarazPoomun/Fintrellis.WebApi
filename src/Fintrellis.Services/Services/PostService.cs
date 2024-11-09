@@ -26,6 +26,7 @@ namespace Fintrellis.Services.Services
             return posts;
         }
 
+        /// <inheritdoc/>
         public async Task<Post?> AddNewPostAsync(PostCreateRequest post)
         {
             try
@@ -44,6 +45,7 @@ namespace Fintrellis.Services.Services
             }
         }
 
+        /// <inheritdoc/>
         public async Task<Post?> UpdatePostAsync(Guid postId, PostUpdateRequest post)
         {
             try
@@ -68,6 +70,7 @@ namespace Fintrellis.Services.Services
             }
         }
 
+        /// <inheritdoc/>
         public async Task<bool> DeletePostAsync(Guid postId)
         {
             try
@@ -82,6 +85,7 @@ namespace Fintrellis.Services.Services
             }
         }
 
+        /// <inheritdoc/>
         private async Task InvokeWithPollyRetry(Func<Task> action)
         {
             await retryHandler.ExecuteWithRetryAsync(action);
