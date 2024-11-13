@@ -6,7 +6,7 @@ using MongoDB.Bson.Serialization.Attributes;
 namespace Fintrellis.Services.Models
 {
     [CollectionName("Posts")]
-    public class Post:  MongoEntity
+    public class Post:  Entity
     {
         [BsonRepresentation(BsonType.String)]
         public Guid PostId { get; set; } 

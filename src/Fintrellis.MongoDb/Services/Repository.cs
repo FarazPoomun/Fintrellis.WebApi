@@ -5,9 +5,9 @@ using System.Linq.Expressions;
 
 namespace Fintrellis.MongoDb.Services
 {
-    public class Repository<T>(IMongoDatabase database): IRepository<T> where T : class, IMongoEntity
+    public class Repository<T>(IMongoDatabase database): IRepository<T> where T : class, IEntity
     {
-        private readonly IMongoCollection<T> _collection = database.GetCollection<T>(MongoEntityExtensions.GetCollectionName<T>())!;
+        private readonly IMongoCollection<T> _collection = database.GetCollection<T>(EntityExtensions.GetCollectionName<T>())!;
 
         /// <inheritdoc/>
         public async Task InsertOneAsync(T data)

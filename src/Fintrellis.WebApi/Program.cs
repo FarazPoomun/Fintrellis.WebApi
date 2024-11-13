@@ -1,16 +1,12 @@
 using Fintrellis.MongoDb.Extensions;
 using Fintrellis.Redis.Extensions;
-using Fintrellis.Redis.Interfaces;
-using Fintrellis.Redis.Services;
 using Fintrellis.Services.Interfaces;
 using Fintrellis.Services.Mapping;
 using Fintrellis.Services.Resiliency;
 using Fintrellis.Services.Services;
-using Fintrellis.Services.Validators;
 using FluentValidation;
 using FluentValidation.AspNetCore;
 using MongoDB.Driver;
-using StackExchange.Redis;
 
 namespace Fintrellis.WebApi
 {

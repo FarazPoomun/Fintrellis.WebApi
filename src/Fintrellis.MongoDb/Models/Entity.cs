@@ -4,7 +4,7 @@ using MongoDB.Bson.Serialization.Attributes;
 
 namespace Fintrellis.MongoDb.Models
 {
-    public class MongoEntity : IMongoEntity
+    public class Entity : IEntity
     {
         [BsonId]
         [BsonRepresentation(BsonType.ObjectId)]

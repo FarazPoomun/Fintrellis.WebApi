@@ -3,7 +3,7 @@
     /// <summary>
     /// Interface: Mongo Entity
     /// </summary>
-    public interface IMongoEntity
+    public interface IEntity
     {
         /// <summary>
         /// Gets or sets the Unique Identifier

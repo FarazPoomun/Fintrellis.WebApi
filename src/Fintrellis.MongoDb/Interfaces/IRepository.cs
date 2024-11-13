@@ -2,7 +2,7 @@
 
 namespace Fintrellis.MongoDb.Interfaces
 {
-    public interface IRepository<T> where T : class, IMongoEntity
+    public interface IRepository<T> where T : class, IEntity
     {
         /// <summary>
         /// Inserts entity in the collection
