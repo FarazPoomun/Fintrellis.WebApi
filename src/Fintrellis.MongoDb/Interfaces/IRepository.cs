@@ -7,9 +7,9 @@ namespace Fintrellis.MongoDb.Interfaces
         /// <summary>
         /// Inserts entity in the collection
         /// </summary>
-        /// <param name="data"></param>
+        /// <param name="entity"></param>
         /// <returns></returns>
-        Task InsertOneAsync(T data);
+        Task InsertOneAsync(T entity);
 
         /// <summary>
         /// Get a list of entity filtered by the predicate

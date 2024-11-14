@@ -1,4 +1,6 @@
 using Fintrellis.MongoDb.Extensions;
+using Fintrellis.MongoDb.Interfaces;
+using Fintrellis.MongoDb.Services;
 using Fintrellis.Redis.Extensions;
 using Fintrellis.Services.Interfaces;
 using Fintrellis.Services.Mapping;
@@ -30,8 +32,10 @@ namespace Fintrellis.WebApi
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
 
-            builder.Services.AddTransient<IPostService, PostService>();
             builder.Services.RegisterRepository();
+            builder.Services.AddSingleton(typeof(ICachedRepository<>), typeof(CachedRepository<>));
+            builder.Services.AddTransient<IPostService, PostService>();
+
             builder.Services.RegisterCachingService(redisConfigurationConnString!);
             builder.Services.AddAutoMapper(serviceAssembly);
             builder.Services.AddSingleton<IRetryHandler>(sp =>

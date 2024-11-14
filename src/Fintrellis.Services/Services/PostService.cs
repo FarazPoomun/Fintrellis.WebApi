@@ -1,6 +1,4 @@
 ﻿using AutoMapper;
-using Fintrellis.MongoDb.Interfaces;
-using Fintrellis.Redis.Interfaces;
 using Fintrellis.Services.Extensions;
 using Fintrellis.Services.Interfaces;
 using Fintrellis.Services.Models;
@@ -12,36 +10,14 @@ namespace Fintrellis.Services.Services
     /// <summary>
     /// Service to manage posts
     /// </summary>
-    public class PostService(ILogger<PostService> logger, IRepository<Post> repository, IMapper mapper, IRetryHandler retryHandler, ICacheService cacheService) : IPostService
+    public class PostService(ILogger<PostService> logger, ICachedRepository<Post> repository, IMapper mapper, IRetryHandler retryHandler) : IPostService
     {
         public async Task<IReadOnlyList<Post>?> GetPostsAsync(Guid? postId = null)
         {
             try
             {
-                Expression<Func<Post, bool>>? predicate = null;
-
-                if (postId != null)
-                {
-                    predicate = z => z.PostId == postId;
-
-                    // Only check cache if post id is provided 
-                    // redis doesnt provide a native way to get all
-                    var post = await cacheService.GetAsync<Post>(postId.ToString()!);
-
-                    if (post != null)
-                    {
-                        return [post];
-                    }
-                }
-
-                var posts = await repository.GetAllAsync(predicate);
-
-                if (postId != null && posts.Count == 1)
-                {
-                    await CachePost(posts[0]);
-                }
-
-                return posts?? [];
+                Expression<Func<Post, bool>>? predicate = postId == null ? null : (z) => z.PostId == postId;
+                return await repository.GetAllAsync(postId.ToString(), predicate) ?? [];
             }
             catch (Exception ex)
             {
@@ -56,11 +32,10 @@ namespace Fintrellis.Services.Services
             try
             {
                 var mappedPost = mapper.Map<Post>(post);
-                mappedPost.PostId = Guid.NewGuid();
+                var postId = Guid.NewGuid();
+                mappedPost.PostId = postId;
 
-                await InvokeWithPollyRetry(async () => await repository.InsertOneAsync(mappedPost));
-                await CachePost(mappedPost);
-
+                await InvokeWithPollyRetry(async () => await repository.InsertOneAsync(postId.ToString(), mappedPost));
                 return mappedPost;
             }
             catch (Exception ex)
@@ -75,9 +50,7 @@ namespace Fintrellis.Services.Services
         {
             try
             {
-                var entity = await cacheService.GetAsync<Post>(postId.ToString())??
-                    await repository.GetFirstOrDefaultAsync(x => x.PostId == postId);
-
+                var entity =   await repository.GetFirstOrDefaultAsync(postId.ToString(), x => x.PostId == postId);
                 if (entity == null)
                 {
                     return null;
@@ -85,11 +58,7 @@ namespace Fintrellis.Services.Services
 
                 mapper.Map(post, entity);
 
-                await InvokeWithPollyRetry(async () => await repository.UpdateAsync(entity));
-
-                await cacheService.RemoveData(postId.ToString());
-                await CachePost(entity);
-
+                await InvokeWithPollyRetry(async () => await repository.UpdateAsync(postId.ToString(), entity));
                 return entity;
             }
             catch (Exception ex)
@@ -104,8 +73,7 @@ namespace Fintrellis.Services.Services
         {
             try
             {
-                await InvokeWithPollyRetry(async () => await repository.DeleteOneAsync(z => z.PostId == postId));
-                await cacheService.RemoveData(postId.ToString());
+                await InvokeWithPollyRetry(async () => await repository.DeleteOneAsync(postId.ToString(), z => z.PostId == postId));
                 return true;
             }
             catch (Exception ex)
@@ -119,11 +87,6 @@ namespace Fintrellis.Services.Services
         private async Task InvokeWithPollyRetry(Func<Task> action)
         {
             await retryHandler.ExecuteWithRetryAsync(action);
-        }
-        
-        private async Task CachePost(Post post)
-        {
-            await cacheService.SetAsync(post.PostId.ToString(), post, DateTimeOffset.UtcNow.AddMinutes(1));
         }
     }
 }

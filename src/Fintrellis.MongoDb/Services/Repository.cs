@@ -10,9 +10,9 @@ namespace Fintrellis.MongoDb.Services
         private readonly IMongoCollection<T> _collection = database.GetCollection<T>(EntityExtensions.GetCollectionName<T>())!;
 
         /// <inheritdoc/>
-        public async Task InsertOneAsync(T data)
+        public async Task InsertOneAsync(T entity)
         {
-            await _collection.InsertOneAsync(data);
+            await _collection.InsertOneAsync(entity);
         }
 
         /// <inheritdoc/>
